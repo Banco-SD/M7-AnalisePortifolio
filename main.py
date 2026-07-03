@@ -4,12 +4,32 @@ import json
 import pandas as pd
 import yfinance as yf
 from fastapi import FastAPI
+import threading
+from worker import iniciar_worker
+from cron_snapshot import iniciar_agendador
+from contextlib import asynccontextmanager
 
 app = FastAPI(title="Módulo de Análise e Portfólio")
 
 REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")
 
 cache = redis.from_url(REDIS_URL, decode_responses=True)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    thread_worker = threading.Thread(target=iniciar_worker, daemon=True)
+    thread_worker.start()
+    
+    thread_cron = threading.Thread(target=iniciar_agendador, daemon=True)
+    thread_cron.start()
+    
+    print("[*] Serviços em background (Worker AMQP e Cron) iniciados com sucesso.")
+    
+    yield 
+
+    print("[*] Encerrando a API e os serviços em background...")
+
+app = FastAPI(title="Módulo de Análise e Portfólio", lifespan=lifespan)
 
 @app.get("/api/portfolio/{usuario_id}")
 def analisar_portfolio(usuario_id: str):

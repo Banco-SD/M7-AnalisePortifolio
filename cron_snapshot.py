@@ -90,14 +90,10 @@ def gerar_snapshots_da_bolsa():
             
     conexao.close()
 
-if __name__ == '__main__':
+def iniciar_agendador():
     print("[*] Servidor de Agendamento Ativo")
-    
-    # Inicia um relógio bloqueante 
     agendador = BlockingScheduler()
     
-    # Dispara no minuto zero, das 10h às 18h, de Seg a Sex
-    # que é o horário de funcionamento da bolsa
     agendador.add_job(
         gerar_snapshots_da_bolsa, 
         'cron', 
@@ -105,6 +101,8 @@ if __name__ == '__main__':
         hour='10-18', 
         minute='0'
     )
-    
-    print("[*] Relógio sincronizado com o horário de funcionamento da B3. A aguardar o pregão...")
+    print("[*] Relógio sincronizado com a B3. A aguardar o pregão...")
     agendador.start()
+
+if __name__ == '__main__':
+    iniciar_agendador()
