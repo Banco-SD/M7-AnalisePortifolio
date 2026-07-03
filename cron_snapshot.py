@@ -5,19 +5,14 @@ import requests
 import pika
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
-REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
-REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", None)
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")
 
 API_URL = os.environ.get("API_URL", "http://localhost:8000")
 
 RABBITMQ_URL = os.environ.get("RABBITMQ_URL", "amqp://guest:guest@localhost:5672//")
 
-# Conexão síncrona com o banco de dados Redis
-cache = redis.Redis(
-    host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD,
-    db=0, decode_responses=True
-)
+cache = redis.from_url(REDIS_URL, decode_responses=True)
+
 
 def gerar_snapshots_da_bolsa():
     """

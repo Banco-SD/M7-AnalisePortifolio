@@ -3,20 +3,10 @@ import pika
 import redis
 import json
 
-# Tenta ler as credenciais das variáveis de ambiente injetadas pela nuvem 
-# Caso não existam, adota os valores padrões do Docker local.
-REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
-REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
-REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", None)
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")
 
 # Inicializa o cliente de conexão com o banco de dados Redis.
-cache = redis.Redis(
-    host=REDIS_HOST, 
-    port=REDIS_PORT, 
-    password=REDIS_PASSWORD,
-    db=0, 
-    decode_responses=True
-)
+cache = redis.from_url(REDIS_URL, decode_responses=True)
 
 def processar_ordem(ch, method, properties, body):
     """
