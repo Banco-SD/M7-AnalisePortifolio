@@ -57,7 +57,15 @@ def analisar_portfolio(usuario_id: str):
     transacoes_str = cache.lrange(chave_transacoes, 0, -1)
     
     if not transacoes_str:
-        return {"usuario_id": usuario_id, "mensagem": "Nenhuma transação encontrada."}
+        print(f"[!] Usuário novo detectado: {usuario_id}. Enviando estrutura de carteira vazia.")
+        return {
+            "usuario_id": usuario_id,
+            "patrimonio_total_atualizado": 0.0,
+            "perfil_de_risco": "Iniciante (Sem Ativos)",
+            "evolucao_patrimonial": [],
+            "recomendacoes": [],
+            "ativos": {}
+        }
 
     # Carrega as transações em um DataFrame Pandas para processamento matricial eficiente
     transacoes = [json.loads(t) for t in transacoes_str]
