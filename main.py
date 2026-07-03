@@ -8,6 +8,7 @@ import threading
 from worker import iniciar_worker
 from cron_snapshot import iniciar_agendador
 from contextlib import asynccontextmanager
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Módulo de Análise e Portfólio")
 
@@ -30,6 +31,17 @@ async def lifespan(app: FastAPI):
     print("[*] Encerrando a API e os serviços em background...")
 
 app = FastAPI(title="Módulo de Análise e Portfólio", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000", # Permite o seu front-end local
+        # "https://seu-futuro-site.vercel.app" <- Quando for para a Vercel, você adiciona a URL aqui
+    ],
+    allow_credentials=True,
+    allow_methods=["*"], # Permite todos os métodos (GET, POST, etc.)
+    allow_headers=["*"], # Permite todos os cabeçalhos (incluindo o de Autenticação)
+)
 
 @app.get("/api/portfolio/{usuario_id}")
 def analisar_portfolio(usuario_id: str):
