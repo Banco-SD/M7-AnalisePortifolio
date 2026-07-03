@@ -35,12 +35,13 @@ app = FastAPI(title="Módulo de Análise e Portfólio", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000", # Permite o seu front-end local
-        # "https://seu-futuro-site.vercel.app" <- Quando for para a Vercel, você adiciona a URL aqui
+        "http://localhost:3000",
+        "https://m8-frontend.vercel.app",
+        "https://gateway-xvfk.onrender.com"
     ],
     allow_credentials=True,
-    allow_methods=["*"], # Permite todos os métodos (GET, POST, etc.)
-    allow_headers=["*"], # Permite todos os cabeçalhos (incluindo o de Autenticação)
+    allow_methods=["*"], 
+    allow_headers=["*"],
 )
 
 @app.get("/api/portfolio/{usuario_id}")
