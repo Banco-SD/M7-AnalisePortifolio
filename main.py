@@ -32,18 +32,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Módulo de Análise e Portfólio", lifespan=lifespan)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://m8-frontend.vercel.app",
-        "https://gateway-xvfk.onrender.com"
-    ],
-    allow_credentials=True,
-    allow_methods=["*"], 
-    allow_headers=["*"],
-)
-
 @app.get("/api/portfolio/{usuario_id}")
 def analisar_portfolio(usuario_id: str):
     
